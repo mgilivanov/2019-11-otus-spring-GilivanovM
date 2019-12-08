@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class QuestionServiceImpl implements QuestionService {
-    QuestionDao questionDao;
-    UserInterfaceService userInterfaceService;
+    private final QuestionDao questionDao;
+    private final UserInterfaceService userInterfaceService;
     public QuestionServiceImpl(QuestionDao questionDao, UserInterfaceService userInterfaceService){
         this.questionDao = questionDao;
         this.userInterfaceService = userInterfaceService;

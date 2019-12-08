@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.util.List;
 
 public class TestingServiceImpl implements TestingService{
-    StudentService studentService;
-    UserInterfaceService userInterfaceService;
-    QuestionService questionService;
+    private final StudentService studentService;
+    private final UserInterfaceService userInterfaceService;
+    private final QuestionService questionService;
     public TestingServiceImpl(StudentService studentService, UserInterfaceService userInterfaceService, QuestionService questionService){
         this.studentService=studentService;
         this.userInterfaceService = userInterfaceService;

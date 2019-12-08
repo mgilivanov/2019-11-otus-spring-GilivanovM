@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class QuestionDaoImpl implements QuestionDao{
-    Resource questionsFile;
+    private final Resource questionsFile;
     public QuestionDaoImpl(Resource questionsFile){
         this.questionsFile = questionsFile;
     }
