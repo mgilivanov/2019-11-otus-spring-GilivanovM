@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@SpringBootTest(properties = {"spring.shell.interactive.enabled=false"})
 @DisplayName("Класс QuestionService")
 public class QuestionServiceTest {
     @Autowired
