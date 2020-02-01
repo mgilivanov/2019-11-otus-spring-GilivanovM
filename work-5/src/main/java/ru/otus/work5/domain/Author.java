@@ -25,7 +25,10 @@ public class Author {
 
     @Override
     public String toString() {
-        return getName();
+        return "Author{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 
     public void setId(long id) {

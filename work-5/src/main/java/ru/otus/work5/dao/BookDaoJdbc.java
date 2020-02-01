@@ -8,19 +8,19 @@ import org.springframework.stereotype.Repository;
 import ru.otus.work5.domain.Author;
 import ru.otus.work5.domain.Book;
 import ru.otus.work5.domain.Genre;
-import ru.otus.work5.mapper.BookMapper;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import ru.otus.work5.extractor.BookResultSetExtractor;
+
+import java.util.*;
 
 @Repository
 public class BookDaoJdbc implements BookDao {
 
     private final NamedParameterJdbcOperations jdbc;
+    private final BookResultSetExtractor bookResultSetExtractor;
 
-    public BookDaoJdbc(NamedParameterJdbcOperations jdbc) {
+    public BookDaoJdbc(NamedParameterJdbcOperations jdbc, BookResultSetExtractor bookResultSetExtractor) {
         this.jdbc = jdbc;
+        this.bookResultSetExtractor = bookResultSetExtractor;
     }
 
     @Override
@@ -49,10 +49,26 @@ public class BookDaoJdbc implements BookDao {
         params.put("l_genre_name", "%"+genreName.toUpperCase()+"%");
         params.put("author_name", authorName);
         params.put("genre_name",  genreName);
-        return jdbc.query("select b.id, b.name from books b " +
-                "where upper(b.name) like :l_book_name " +
-                "and (:author_name is null or id in (select ba.book_id from authors a join book_authors ba on ba.author_id=a.id where upper(a.name) like :l_author_name)) " +
-                "and (:genre_name is null or id in (select bg.book_id from genres g join book_genres bg on bg.genre_id=g.id where upper(g.name)  like :l_genre_name))", params, new BookMapper());
+        return new ArrayList( jdbc.query("select b.id, b.name, " +
+                               "aa.id as author_id, aa.name as author_name, " +
+                               "gg.id as genre_id, gg.name as genre_name, "+
+                               "from books b " +
+                               "left join book_authors ba on ba.book_id = b.id " +
+                        "left join authors aa on aa.id = ba.author_id " +
+                        "left join book_genres bg on bg.book_id = b.id " +
+                        "left join genres gg on gg.id = bg.genre_id "+
+                              "where upper(b.name) like :l_book_name " +
+                                "and (:author_name is null or b.id in (" +
+                                   "select ba.book_id " +
+                                     "from authors a " +
+                                     "join book_authors ba on ba.author_id=a.id " +
+                                    "where upper(a.name) like :l_author_name)) " +
+                                "and (:genre_name is null or b.id in (" +
+                                  "select bg.book_id " +
+                                    "from genres g " +
+                                    "join book_genres bg on bg.genre_id=g.id " +
+                                   "where upper(g.name)  like :l_genre_name)) " +
+                                   "order by b.id", params, bookResultSetExtractor).values());
     }
 
     @Override

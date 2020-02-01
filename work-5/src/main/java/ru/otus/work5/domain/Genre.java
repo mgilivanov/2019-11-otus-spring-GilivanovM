@@ -25,7 +25,10 @@ public class Genre {
 
     @Override
     public String toString() {
-        return getName();
+        return "Genre{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 
     public void setId(long id) {

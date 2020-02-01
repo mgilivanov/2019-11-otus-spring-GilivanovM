@@ -53,9 +53,13 @@ public class Book {
 
     @Override
     public String toString() {
-        return getName();
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", authors=" + authors +
+                ", genres=" + genres +
+                '}';
     }
-
 
     @Override
     public boolean equals(Object o) {

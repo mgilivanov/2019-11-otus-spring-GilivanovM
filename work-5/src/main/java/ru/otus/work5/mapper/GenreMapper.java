@@ -6,7 +6,6 @@ import ru.otus.work5.domain.Genre;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
 public class GenreMapper implements RowMapper<Genre> {
 
     @Override

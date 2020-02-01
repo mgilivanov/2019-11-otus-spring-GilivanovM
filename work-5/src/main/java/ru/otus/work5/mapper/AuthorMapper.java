@@ -6,7 +6,6 @@ import ru.otus.work5.domain.Author;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
 public class AuthorMapper implements RowMapper<Author> {
 
     @Override

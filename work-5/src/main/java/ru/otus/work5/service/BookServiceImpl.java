@@ -23,23 +23,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> find(String bookName, String authorName, String genreName) {
         List<Book> books = bookDao.find(bookName, authorName, genreName);
-        for (Book book : books) {
-            List<Author> authors = authorService.findByBookId(book.getId());
-            for (Author author : authors) {
-                book.addAuthor(author);
-            }
-            List<Genre> genres = genreService.findByBookId(book.getId());
-            for (Genre genre : genres) {
-                book.addGenre(genre);
-            }
-        }
         return books;
     }
 
     @Override
     public Book add(String name, String authorsStr, String genresStr) {
         Book book = new Book(name);
-
         String[] authorName = authorsStr.split(",");
         for(int i = 0; i < authorName.length; i++) {
             Author author = authorService.findByName(authorName[i]);
