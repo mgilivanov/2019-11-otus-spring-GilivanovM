@@ -1,0 +1,6 @@
+locale:
+  language: en
+  country: US
+spring:
+  datasource:
+    data: test_data.sql
