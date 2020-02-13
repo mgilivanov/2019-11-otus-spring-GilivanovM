@@ -23,20 +23,6 @@ public class PrintServiceImpl implements PrintService {
     }
 
     @Override
-    public void print(Book book) {
-            String bookStr = messageService.getMessage("book.id") + book.getId() + "; " + messageService.getMessage("book.name") + book.getName() + "; ";
-            String authorsStr = new String(messageService.getMessage("author.name"));
-            String genresStr = new String(messageService.getMessage("genre.name"));
-            for (Author author : book.getAuthors()) {
-                authorsStr = authorsStr + author.toString() + ", ";
-            }
-            for (Genre genre : book.getGenres()) {
-                genresStr = genresStr + genre.toString() + ", ";
-            }
-            print(bookStr + authorsStr.replaceFirst(",\\s$","") + "; " + genresStr.replaceFirst(",\\s$","") + ".");
-    }
-
-    @Override
     public void print(Object object) {
         this.out.println(object.toString());
     }

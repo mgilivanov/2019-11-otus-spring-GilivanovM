@@ -5,7 +5,6 @@ import ru.otus.work6.dao.CommentDao;
 import ru.otus.work6.domain.Book;
 import ru.otus.work6.domain.Comment;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,11 +29,4 @@ public class CommentServiceImpl implements CommentService {
             return comment;
         }
     }
-
-    @Override
-    public List<Comment> listByBookId(Long bookId) {
-        return commentDao.listByBookId(bookId);
-    }
-
-
 }

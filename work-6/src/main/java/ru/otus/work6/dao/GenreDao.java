@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GenreDao {
-    List<Genre> findByBookId(long id);
 
     Optional<Genre> findByName(String name);
 
+    Optional<Genre> findById(long id);
+
     List<Genre> list();
+
+    void update(Genre genre);
 }

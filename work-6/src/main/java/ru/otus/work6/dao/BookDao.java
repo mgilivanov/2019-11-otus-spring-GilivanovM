@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public interface BookDao {
 
-    List<Book> find(String bookName, String authorName, String genreName);
+    List<Book> findByName(String bookName);
+
+    List<Book> findAll();
 
     void add(Book book);
 

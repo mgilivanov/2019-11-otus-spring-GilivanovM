@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GenreService {
-    List<Genre> findByBookId(long id);
 
     Optional<Genre> findByName(String name);
 
-    public Genre create(String name);
+    Genre create(String name);
+
+    Optional<Genre> findById(long id);
 
     List<Genre> list();
 }

@@ -22,6 +22,14 @@ public class Comment {
     @JoinColumn(name = "book_id")
     Book book;
 
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                '}';
+    }
+
     @Column(name = "text", nullable = false)
     String text;
 

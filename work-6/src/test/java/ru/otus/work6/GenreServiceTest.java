@@ -42,10 +42,4 @@ public class GenreServiceTest {
         assertEquals(Optional.empty(), genreService.findByName("False Genre"));
     }
 
-    @Test
-    @DisplayName("корректно ищет жанры по названию книги")
-    void shouldFindByBookIdCorrect() {
-        assertEquals(EXISTS_GENRES, genreService.findByBookId(2));
-    }
-
 }

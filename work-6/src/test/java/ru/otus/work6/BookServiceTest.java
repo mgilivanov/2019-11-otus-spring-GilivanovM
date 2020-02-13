@@ -41,27 +41,15 @@ public class BookServiceTest {
     @Test
     @DisplayName("корректно ищет книги по названию")
     void shouldFindCorrect() {
-        assertEquals(EXISTS_BOOKS, bookService.find("War and Peace","",""));
-    }
-
-    @Test
-    @DisplayName("корректно ищет книги по автору")
-    void shouldFindByAuthorCorrect() {
-        assertEquals(EXISTS_BOOKS, bookService.find("","Tolstoy",""));
-    }
-
-    @Test
-    @DisplayName("корректно ищет книги по названию и жанру")
-    void shouldFindByGenreCorrect() {
-        assertEquals(EXISTS_BOOKS, bookService.find("War","","Military prose"));
+        assertEquals(EXISTS_BOOKS, bookService.findByName("War and Peace"));
     }
 
     @Test
     @DisplayName("корректно добавляет новую книгу")
     void shouldAddCorrect(){
-        assertEquals(3, bookService.find("","","").size());
+        assertEquals(3, bookService.findAll().size());
         assertEquals(NEW_BOOK, bookService.add("New Book","Lev Tolstoy,New Book Author","Novel,New Book Genre"));
-        assertEquals(4, bookService.find("","","").size());
+        assertEquals(4, bookService.findAll().size());
     }
 
 }

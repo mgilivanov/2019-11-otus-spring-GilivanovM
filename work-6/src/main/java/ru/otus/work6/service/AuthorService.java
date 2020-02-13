@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AuthorService {
-    List<Author> findByBookId(long id);
 
     Optional<Author> findByName(String name);
 
-    public Author create(String name);
+    Optional<Author> findById(long id);
+
+    Author create(String name);
 
     List<Author> list();
 }

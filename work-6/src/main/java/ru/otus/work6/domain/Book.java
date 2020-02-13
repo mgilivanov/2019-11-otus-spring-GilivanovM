@@ -27,19 +27,21 @@ public class Book {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Fetch(FetchMode.SELECT)
-    @BatchSize(size = 100)
-    @ManyToMany(fetch = FetchType.EAGER, targetEntity = Author.class)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = Author.class,  cascade={CascadeType.MERGE})
     @JoinTable(name = "book_authors", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
     private List<Author> authors;
 
-    @Fetch(FetchMode.SELECT)
-    @BatchSize(size = 100)
-    @ManyToMany(fetch = FetchType.EAGER, targetEntity = Genre.class)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = Genre.class,  cascade={CascadeType.MERGE})
     @JoinTable(name = "book_genres", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private List<Genre> genres;
+
+    @Fetch(value = FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "book")
+    private List<Comment> comments;
 
     public Book(long id, String name) {
         this.id = id;
@@ -53,6 +55,7 @@ public class Book {
         this.authors = new ArrayList<>();
         this.genres = new ArrayList<>();
     }
+
 
     public void addAuthor(Author author) {
         this.authors.add(author);

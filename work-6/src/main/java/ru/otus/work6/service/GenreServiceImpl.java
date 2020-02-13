@@ -16,18 +16,20 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public List<Genre> findByBookId(long id) {
-        return genreDao.findByBookId(id);
-    }
-
-    @Override
     public Optional<Genre> findByName(String name){
         return genreDao.findByName(name);
     }
 
     @Override
+    public Optional<Genre> findById(long id){
+        return genreDao.findById(id);
+    }
+
+    @Override
     public Genre create(String name){
-        return new Genre(name);
+        Genre genre = new Genre(name);
+        genreDao.update(genre);
+        return genre;
     }
 
     @Override

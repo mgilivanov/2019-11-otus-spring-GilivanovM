@@ -5,6 +5,7 @@ import ru.otus.work6.dao.AuthorDao;
 import ru.otus.work6.dao.BookDao;
 import ru.otus.work6.domain.Author;
 import ru.otus.work6.domain.Book;
+import ru.otus.work6.domain.Comment;
 import ru.otus.work6.domain.Genre;
 
 import java.util.List;
@@ -23,8 +24,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> find(String bookName, String authorName, String genreName) {
-        List<Book> books = bookDao.find(bookName, authorName, genreName);
+    public List<Book> findByName(String bookName) {
+        List<Book> books = bookDao.findByName(bookName);
+        return books;
+    }
+
+    @Override
+    public List<Book> findAll() {
+        List<Book> books = bookDao.findAll();
         return books;
     }
 
@@ -65,6 +72,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public boolean deleteById(long id) {
         return bookDao.deleteById(id);
+    }
+
+    public List<Comment> getComments(Book book){
+        return book.getComments();
     }
 
 }

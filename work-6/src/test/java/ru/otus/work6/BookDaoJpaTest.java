@@ -44,7 +44,7 @@ public class BookDaoJpaTest {
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
         System.out.println("\n\n\n\n----------------------------------------------------------------------------------------------------------");
-        val books = repositoryJpa.find("","","");
+        val books = repositoryJpa.findAll();
         assertThat(books).isNotNull().hasSize(EXPECTED_NUMBER_OF_BOOKS)
                 .allMatch(s -> !s.getName().equals(""))
                 .allMatch(s -> s.getAuthors() != null && s.getAuthors().size() > 0)

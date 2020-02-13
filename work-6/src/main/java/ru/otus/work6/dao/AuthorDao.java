@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AuthorDao {
-    List<Author> findByBookId(long id);
 
     Optional<Author> findByName(String name);
 
+    Optional<Author> findById(long id);
+
     List<Author> list();
+
+    void update(Author author);
 }

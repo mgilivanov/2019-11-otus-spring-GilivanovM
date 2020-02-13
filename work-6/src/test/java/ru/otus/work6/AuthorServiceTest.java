@@ -42,10 +42,4 @@ public class AuthorServiceTest {
         assertEquals(Optional.empty(), authorService.findByName("False Author"));
     }
 
-    @Test
-    @DisplayName("корректно ищет автора по названию книги")
-    void shouldFindByBookIdCorrect() {
-        assertEquals(EXISTS_AUTHORS, authorService.findByBookId(1));
-    }
-
 }

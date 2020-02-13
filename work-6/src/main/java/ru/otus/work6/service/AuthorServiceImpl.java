@@ -16,20 +16,21 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<Author> findByBookId(long id) {
-        return authorDao.findByBookId(id);
-    }
-
-    @Override
     public Optional<Author> findByName(String name){
         return authorDao.findByName(name);
     }
 
     @Override
-    public Author create(String name){
-        return new Author(name);
+    public Optional<Author> findById(long id){
+        return authorDao.findById(id);
     }
 
+    @Override
+    public Author create(String name){
+        Author author = new Author(name);
+        authorDao.update(author);
+        return author;
+    }
 
     @Override
     public List<Author> list(){
