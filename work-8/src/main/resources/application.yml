@@ -1,0 +1,11 @@
+locale:
+  language: en
+  country: US
+spring:
+  data:
+    mongodb:
+      database: library
+
+logging:
+  level:
+    ROOT: ERROR
