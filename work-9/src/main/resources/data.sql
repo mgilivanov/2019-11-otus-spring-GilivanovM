@@ -1,0 +1,11 @@
+insert into authors (id, name) values (1, 'Lev Tolstoy');
+insert into authors (id, name) values (2, 'Bruce Ekkel');
+insert into authors (id, name) values (3, 'Ivanov Ivan');
+insert into genres(id, name) values (1, 'Military prose');
+insert into genres(id, name) values (2, 'Tutorial');
+insert into genres(id, name) values (3, 'Comedy');
+insert into books (id, name, author_id, genre_id) values (1, 'War and Peace', 1, 1);
+insert into books (id, name, author_id, genre_id) values (2, 'Philosophy of Java', 2, 2);
+insert into books (id, name, author_id, genre_id) values (3, 'Сollection of jokes', 3, 3);
+insert into comments(id, book_id, text) values (1, 1, 'good book');
+insert into comments(id, book_id, text) values (2, 1, 'poor book');
