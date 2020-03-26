@@ -1,6 +1,3 @@
-locale:
-  language: en
-  country: US
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
