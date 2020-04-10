@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Comments of book [[${book.id}]] - [[${book.name}]]</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .comments, .comments td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+
+   textarea {
+    padding: 10px;
+    width: 400px;
+    height: 200px;
+   }
+
+    </style>
+</head>
+<body>
+<h1>Comments of book [[${book.id}]] - [[${book.name}]]:</h1>
+
+<table class="comments">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>Comment</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="comment : ${book.comments}">
+        <td th:text="${comment.id}">1</td>
+        <td th:text="${comment.text}">Comments text</td>
+    </tr>
+    </tbody>
+</table>
+<form th:action="@{/comment(id=${book.id})}" method="POST">
+    <input id="id" name="id" type="hidden" value="0"/>
+    <textarea id="comment_text" name="text" type="text"/></textarea>
+    <div>
+      <button type="submit" name="method" th:value="save">Add</button>
+        <a href="/"><button type="button">Back</button></a>
+    </div>
+</form>
+</body>
+</html>
