@@ -1,0 +1,29 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - "8888:8888"
+    environment:
+      - MONGO_DB_URI=mongodb://mongodatabase:27017
+      - WAIT_FOR=mongodb:27017
+    depends_on:
+      - mongodatabase
+    networks:
+      - backend
+  mongodatabase:
+    image: mongo:latest
+    container_name: mongodatabase
+    restart: unless-stopped
+    command: mongod
+    environment:
+      MONGO_INITDB_DATABASE: library
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+networks:
+  backend:

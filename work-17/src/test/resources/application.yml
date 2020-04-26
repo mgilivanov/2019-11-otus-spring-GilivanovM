@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      database: library
+      uri: ${DB_URI}
+
+logging:
+  level:
+    ROOT: WARN
+
+server:
+  port: 8888
