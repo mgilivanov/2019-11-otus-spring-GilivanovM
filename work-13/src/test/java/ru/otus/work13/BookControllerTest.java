@@ -31,14 +31,21 @@ public class BookControllerTest {
                 .andExpect(status().isFound());
     }
 
-    @WithMockUser("user")
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    public void testAuthenticated() throws Exception {
+    public void testAdminAuthenticatedOK() throws Exception {
         mockMvc.perform(get("/edit"))
                 .andExpect(status().isOk());
     }
 
-    @WithMockUser("user")
+    @WithMockUser(username = "user", authorities = {"USER"})
+    @Test
+    public void testUserAuthenticatedForbidden() throws Exception {
+        mockMvc.perform(get("/edit"))
+                .andExpect(status().isForbidden());
+    }
+
+    @WithMockUser(username = "user", authorities = {"USER"})
     @Test
     void indexPageModel() throws Exception {
         ModelAndView modelAndView = mockMvc.perform(get("/"))
@@ -48,7 +55,7 @@ public class BookControllerTest {
         assertEquals("list_books", modelAndView.getViewName());
     }
 
-    @WithMockUser("user")
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
     void editPageModel() throws Exception {
         ModelAndView modelAndView = mockMvc.perform(get("/edit"))
@@ -58,7 +65,7 @@ public class BookControllerTest {
         assertEquals("edit", modelAndView.getViewName());
     }
 
-    @WithMockUser("user")
+    @WithMockUser(username = "user", authorities = {"USER"})
     @Test
     void commentPageModelWithoutId() throws Exception {
         mockMvc.perform(get("/comment"))
