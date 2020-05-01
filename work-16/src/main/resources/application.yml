@@ -1,0 +1,28 @@
+spring:
+  data:
+    mongodb:
+      database: library
+    rest:
+      base-path: /rest
+
+logging:
+  level:
+    ROOT: INFO
+  file:
+    name: work_16_app.log
+
+server:
+  port: 8888
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, logfile
+    health:
+      show-details: always
+    loggers:
+      enabled: true
