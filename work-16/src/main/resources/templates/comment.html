@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Comments of book [[${book.id}]] - [[${book.name}]]</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .comments, .comments td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+
+        textarea {
+        padding: 10px;
+        width: 400px;
+        height: 200px;
+        }
+
+        #user-div {
+        width: 150px;
+        height: 200px;
+        position: fixed;
+        top:0;
+        left:0;
+        }
+
+    </style>
+</head>
+<body>
+<h1>Comments of book [[${book.id}]] - [[${book.name}]]:</h1>
+
+<table class="comments">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Comment</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="comment : ${book.comments}">
+        <td th:text="${comment.createDate}">10.11.2020 12:40:03</td>
+        <td th:text="${comment.text}">Comments text</td>
+    </tr>
+    </tbody>
+</table>
+<form th:action="@{/comment}" method="POST">
+    <input id="id" name="id" type="hidden" th:value="${book.id}" value="0"/>
+    <textarea id="comment_text" name="text" type="text"/></textarea>
+    <div>
+      <button type="submit" name="method" th:value="save">Add</button>
+        <a href="/"><button type="button">Back</button></a>
+    </div>
+</form>
+<style type="text/css">
+
+</style>
+</head>
+<div id="user-div">
+    <a href="/logout">Exit</a>
+</div>
+</body>
+</html>
+</body>
+</html>
