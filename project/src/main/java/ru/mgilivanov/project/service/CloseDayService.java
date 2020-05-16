@@ -1,0 +1,9 @@
+package ru.mgilivanov.project.service;
+
+import ru.mgilivanov.project.domain.Credit;
+
+import java.time.LocalDate;
+
+public interface CloseDayService {
+    void runEod(LocalDate date) throws InterruptedException;
+}
