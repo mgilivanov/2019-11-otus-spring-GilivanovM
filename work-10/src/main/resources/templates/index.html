@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all books</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .books, .books td, .comments, .comments td {
+            border: 1px solid lightgray;
+            padding: 10px;
+        }
+
+        textarea {
+        padding: 10px;
+        width: 400px;
+        height: 200px;
+        }
+    </style>
+    <script src="https://unpkg.com/jquery"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+  <div id="div_list">
+    <h1>List of books:</h1>
+    <table class="books">
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>Name</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="book in books">
+            <td>{{ book.id }}</td>
+            <td>{{ book.name }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.genre }}</td>
+            <td>
+                <button v-on:click="editBook(book)">Edit</button>
+                <button v-on:click="deleteBook(book)">Delete</button>
+                <button v-on:click="getComments(book)">Comments</button>
+            </td>
+          </tr>
+        </tbody>
+    </table>
+    <button v-on:click="addBook()">Add book</button>
+  </div>
+  <div id="div_edit" hidden="true">
+      <h1 id="h_edit">Edit book: "{{ book_name_input }}"</h1>
+      <h1 id="h_new">New book:</h1>
+      <input id="id_input" type="hidden" v-model="book_id_input"/>
+      <label for="name_input">Name:</label>
+      <input id="name_input" name="Name" type="text" v-model="book_name_input"/>
+      <label for="author_input">Author:</label>
+      <input id="author_input" name="author" type="text" v-model="book_author_input"/>
+      <label for="genre_input">Genre:</label>
+      <input id="genre_input" name="genre" type="text" v-model="book_genre_input"/>
+      <button v-on:click="saveBook()">Save Book</button>
+      <button v-on:click="backToList()">Cancel</button>
+  </div>
+  <div id="div_comments" hidden="true">
+      <button v-on:click="backToList()">Back</button>
+      <h1>Comments for book "{{ book_name_input }}"</h1>
+      <table class="comments" id="comments-table">
+          <thead>
+          <tr>
+              <th>Date</th>
+              <th>Text</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="comment in comments">
+              <td>{{ comment.text }}</td>
+              <td>{{ comment.createDate }}</td>
+          </tbody>
+      </table>
+      <textarea name="comment_text" type="text" v-model="comment_text_input"/></textarea>
+      <div>
+          <button v-on:click="addComment()">Add comment</button>
+      </div>
+      <button v-on:click="backToList()">Back</button>
+  </div>
+</div>
+<script>
+        function hide_all(){
+          document.getElementById('div_list').hidden = true;
+          document.getElementById('div_edit').hidden = true;
+          document.getElementById('div_comments').hidden = true;
+          document.getElementById('h_edit').hidden = true;
+          document.getElementById('h_new').hidden = true;
+        }
+        function switch_to_edit() {
+          hide_all();
+          document.getElementById('div_edit').hidden = false;
+          document.getElementById('h_edit').hidden = false;
+        }
+        function switch_to_new() {
+          hide_all();
+          document.getElementById('div_edit').hidden = false;
+          document.getElementById('h_new').hidden = false;
+        }
+        function switch_to_list() {
+          hide_all();
+          document.getElementById('div_list').hidden = false;
+        }
+        function switch_to_comments() {
+          hide_all();
+          document.getElementById('div_comments').hidden = false;
+        }
+
+        var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                books: null,
+                comments: null,
+                currentBook: null,
+                comment_text_input: null,
+                book_id_input: null,
+                book_name_input: '',
+                book_author_input: '',
+                book_genre_input: ''
+            }
+        },
+        mounted(){
+            this.clear();
+            this.getBookList();
+        },
+        methods: {
+            getBookList: function () {
+                axios
+                    .get("/books_api/list_books")
+                    .then(response => (this.books = response.data))
+            },
+
+            getComments: function (book) {
+                axios
+                    .get("/books_api/list_comments/" + book.id)
+                    .then(response => (this.comments = response.data))
+                    .then(() => {
+                                 this.setCurrentBook(book);
+                                 switch_to_comments();
+                                })
+            },
+
+            saveBook: function () {
+                axios
+                    .post("/books_api/edit", {
+                        "id": this.book_id_input,
+                        "name": this.book_name_input,
+                        "genre": this.book_genre_input,
+                        "author": this.book_author_input
+                    })
+                    .then(() => {
+                        this.backToList();
+                    })
+            },
+
+            addComment: function () {
+                axios
+                    .post("/books_api/add_comment", {
+                        "text": this.comment_text_input,
+                        "bookId": this.currentBook.id
+                    })
+                    .then(() => {
+                        this.getComments(this.currentBook);
+                    })
+            },
+
+            deleteBook: function (book) {
+                axios
+                    .post("/books_api/delete/" + book.id)
+                    .then(() => {
+                        this.backToList();
+                    })
+            },
+
+            setCurrentBook: function (book) {
+                this.clear();
+                this.currentBook = book;
+                this.book_id_input = book.id;
+                this.book_name_input = book.name;
+                this.book_author_input = book.author;
+                this.book_genre_input = book.genre;
+            },
+
+            clear: function () {
+                this.currentBook = null;
+                this.book_id_input = null;
+                this.book_name_input = '';
+                this.book_genre_input = '';
+                this.book_author_input = '';
+                this.comment_text_input = '';
+            },
+
+            backToList: function (){
+              this.clear();
+              this.getBookList();
+              switch_to_list();
+            },
+
+            addBook: function () {
+                this.clear();
+                switch_to_new();
+            },
+
+            editBook: function (book) {
+                this.setCurrentBook(book);
+                switch_to_edit();
+            }
+        },
+    })
+</script>
+
+</body>
+</html>
