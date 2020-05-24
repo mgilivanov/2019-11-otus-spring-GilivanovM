@@ -11,14 +11,6 @@ public interface AccountService {
 
     Optional<Account> findById(long id);
 
-    Account getBankAccountDt();
-
-    Account getBankAccountKt();
-
-    Account getBankAccountPercents();
-
-    Account getBankAccountPenalty();
-
     List<Account> openCreditAccounts(Credit credit);
 
     void debit(Account account, Double sum);

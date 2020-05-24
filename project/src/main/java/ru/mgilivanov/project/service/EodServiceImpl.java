@@ -7,7 +7,6 @@ import ru.mgilivanov.project.domain.Eod;
 import ru.mgilivanov.project.exception.ApplicationException;
 import ru.mgilivanov.project.exception.BusinessLogicException;
 import ru.mgilivanov.project.integration.CloseDayGateway;
-import ru.mgilivanov.project.model.eod.EodStateRequest;
 import ru.mgilivanov.project.model.eod.EodStateResponse;
 import ru.mgilivanov.project.repository.EodRepository;
 
@@ -70,7 +69,10 @@ public class EodServiceImpl implements EodService {
         if (!currentEodDate.equals(getEodDate())){
             throw new BusinessLogicException(BusinessLogicException.EOD_NOT_THIS_CODE, BusinessLogicException.EOD_NOT_THIS_MESSAGE);
         }
-        closeDayGateway.processCloseDay(getCurrentEod().setCloseTimeStart(LocalDateTime.now()).setStatus(Eod.Status.CLOSING), false);
+        Eod currentEod = getCurrentEod();
+        currentEod.setCloseTimeStart(LocalDateTime.now()).setStatus(Eod.Status.CLOSING);
+        eodRepository.save(currentEod);
+        closeDayGateway.processCloseDay(currentEod, false);
         Eod newEod = new Eod().setDate(currentEodDate.plusDays(1)).setOpenTime(LocalDateTime.now()).setStatus(Eod.Status.OPEN);
         eodRepository.save(newEod);
         return newEod.getDate();
@@ -80,6 +82,7 @@ public class EodServiceImpl implements EodService {
     @Override
     public void closeOldEod(){
         Eod eod = getClosingEod().setCloseTimeEnd(LocalDateTime.now()).setStatus(Eod.Status.CLOSED);
+        eodRepository.save(eod);
         closeDayGateway.processCloseDay(eod, true);
     }
 

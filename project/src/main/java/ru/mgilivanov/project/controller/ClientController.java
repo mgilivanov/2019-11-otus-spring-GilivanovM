@@ -3,6 +3,7 @@ package ru.mgilivanov.project.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,7 @@ public class ClientController {
     public static final String CLIENT_INFO = CLIENT_PREFIX + "/find";
 
     @ApiOperation("Создание клиента")
-    @PostMapping(CLIENT_ADD)
+    @PostMapping(value = CLIENT_ADD,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ClientDto add(@NotNull @Validated @RequestBody ClientAddRequest request) {
         return new ClientDto(clientService.add(request));
     }

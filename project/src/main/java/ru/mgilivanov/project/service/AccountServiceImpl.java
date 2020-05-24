@@ -25,31 +25,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account getBankAccountDt() {
-        return (accountRepository.findByAccountTypeCode(AccountType.BANK_EXTERNAL_DT))
-                .orElseThrow(() -> new ApplicationException(ApplicationException.NO_BANK_ACC_DT_CODE, ApplicationException.NO_BANK_ACC_DT_MESSAGE));
-    }
-
-    @Override
-    public Account getBankAccountKt() {
-        return (accountRepository.findByAccountTypeCode(AccountType.BANK_EXTERNAL_KT))
-                .orElseThrow(() -> new ApplicationException(ApplicationException.NO_BANK_ACC_KT_CODE, ApplicationException.NO_BANK_ACC_KT_MESSAGE));
-    }
-
-    @Override
-    public Account getBankAccountPercents(){
-        return (accountRepository.findByAccountTypeCode(AccountType.BANK_PERCENTS))
-                .orElseThrow(() -> new ApplicationException(ApplicationException.NO_BANK_ACC_PERCENTS_CODE, ApplicationException.NO_BANK_ACC_PERCENTS_MESSAGE));
-    }
-
-    @Override
-    public Account getBankAccountPenalty(){
-        return (accountRepository.findByAccountTypeCode(AccountType.BANK_PENALTIES))
-                .orElseThrow(() -> new ApplicationException(ApplicationException.NO_BANK_ACC_PENALTY_CODE, ApplicationException.NO_BANK_ACC_PENALTY_MESSAGE));
-    }
-
-
-    @Override
     public List<Account> openCreditAccounts(Credit credit) {
         List<Account> accounts = new ArrayList<>();
         for (AccountType accountType : accountTypeService.getAllCreditAccountTypes()){

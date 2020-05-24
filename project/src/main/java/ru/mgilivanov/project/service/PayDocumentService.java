@@ -13,4 +13,5 @@ public interface PayDocumentService {
     PayDocument process(PayDocument payDocument);
     void processAllValueDateDocs(LocalDate date);
     List<PayDocument> findAllByEodDate(LocalDate date);
+    long countByEodDate(LocalDate date);
 }

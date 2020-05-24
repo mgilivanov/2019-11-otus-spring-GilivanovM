@@ -7,7 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.mgilivanov.project.model.client.ClientInfoResponse;
 import ru.mgilivanov.project.model.eod.CloseDayRequest;
 import ru.mgilivanov.project.model.Result;
 import ru.mgilivanov.project.model.eod.EodStateRequest;
@@ -31,6 +30,7 @@ public class CloseDayController {
     @ApiOperation("Закрытие опер.дня")
     @PostMapping(CLOSE_DAY_RUN)
     public Result save(@NotNull @Validated @RequestBody CloseDayRequest request) throws InterruptedException {
+        closeDayService.prepareRunEod(request.getDate());
         closeDayService.runEod(request.getDate());
         return new Result();
     }

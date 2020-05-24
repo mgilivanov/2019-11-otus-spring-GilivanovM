@@ -33,11 +33,6 @@ public class AccountType {
 
     public static final String SERVICE = "SERVICE";
 
-    public static final String BANK_EXTERNAL_DT = "BANK_EXTERNAL_DT";
-    public static final String BANK_EXTERNAL_KT = "BANK_EXTERNAL_KT";
-    public static final String BANK_PERCENTS = "BANK_PERCENTS";
-    public static final String BANK_PENALTIES = "BANK_PENALTIES";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

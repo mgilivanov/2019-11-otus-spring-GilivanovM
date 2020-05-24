@@ -1,15 +1,17 @@
+server:
+  port: 8888
+
 app:
   server-email: spring.project@mail.ru
   admin-email: spring.project@mail.ru
 
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
-    initialization-mode: always
-    schema: classpath:schema.sql
+    initialization-mode: never
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/creditproject
+    username: postgres
+    password: postgres
 
   jpa:
     generate-ddl: false
@@ -39,6 +41,18 @@ spring:
 logging:
   level:
     ROOT: INFO
+  file:
+    name: project_app.log
 
-server:
-  port: 8888
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, logfile
+    health:
+      show-details: always
+    loggers:
+      enabled: true

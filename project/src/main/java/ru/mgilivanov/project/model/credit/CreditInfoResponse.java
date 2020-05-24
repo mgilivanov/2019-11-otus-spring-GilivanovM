@@ -54,7 +54,7 @@ public class CreditInfoResponse extends Result {
     @JsonProperty("accounts")
     private List<AccountDto> accounts;
 
-    public class AccountDto{
+    public class AccountDto {
         @ApiModelProperty(value = "Идентификатор счёта", position = 1)
         @JsonProperty("id")
         private long id;
@@ -67,25 +67,27 @@ public class CreditInfoResponse extends Result {
         @JsonProperty("balance")
         private Double balance;
 
-        public AccountDto(Account account){
+        public AccountDto(Account account) {
             this.id = account.getId();
             this.type = account.getAccountType().getCode();
             this.balance = account.getBalance();
         }
     }
 
-    public CreditInfoResponse(Credit credit){
+    public CreditInfoResponse(Credit credit) {
         this.accounts = new ArrayList();
-        for (Account account : credit.getAccounts()){
-            accounts.add(new AccountDto(account));
+        if (credit != null) {
+            for (Account account : credit.getAccounts()) {
+                accounts.add(new AccountDto(account));
+            }
+            this.setId(credit.getId())
+                    .setClientId(credit.getClient().getId())
+                    .setSum(credit.getSum())
+                    .setRegPayment(credit.getRegPayment())
+                    .setIssueDate(credit.getIssueDate())
+                    .setNextStmtDate(credit.getNextStmtDate())
+                    .setPercentRate(credit.getPercentRate())
+                    .setStatus(credit.getStatus());
         }
-        this.setId(credit.getId())
-                .setClientId(credit.getClient().getId())
-                .setSum(credit.getSum())
-                .setRegPayment(credit.getRegPayment())
-                .setIssueDate(credit.getIssueDate())
-                .setNextStmtDate(credit.getNextStmtDate())
-                .setPercentRate(credit.getPercentRate())
-                .setStatus(credit.getStatus());
     }
 }

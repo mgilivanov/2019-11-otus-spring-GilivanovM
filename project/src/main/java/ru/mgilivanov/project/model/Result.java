@@ -15,7 +15,9 @@ public class Result {
     public static final int CODE_OK = 0;
     public static final int BAD_JSON_CODE = -100;
     public static final String BAD_JSON_MESSAGE = "Запрос не соответствует JSON";
-    public static final int VALIDATION_ERROR_CODE = -200;
+    public static final int FORBIDDDEN_CODE = -200;
+    public static final String FORBIDDDEN_MESSAGE = "Доступ запрещен";
+    public static final int VALIDATION_ERROR_CODE = -300;
 
     @ApiModelProperty(value = "Код результата", required = false, position = -2)
     @JsonProperty("code")

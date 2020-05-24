@@ -16,4 +16,6 @@ public interface PayDocumentRepository extends JpaRepository<PayDocument, Long> 
     List<PayDocument> findAllByEodDateAndStatus(LocalDate date, String status);
 
     List<PayDocument> findAllByEodDate(LocalDate date);
+
+    long countByEodDate(LocalDate date);
 }

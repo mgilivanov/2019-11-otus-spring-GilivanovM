@@ -54,16 +54,10 @@ public class CreditController {
         return new CreditForClientResponse(creditService.findAllByIssueDate(request.getIssueDate()));
     }
 
-    @ApiOperation("Создание заявки на частичное/полное досрочное погашение кредита")
-    @PostMapping(CREDIT_PREPAYMENT)
-    public Result create(@NotNull @Validated @RequestBody CreditPrepaymentRequest request) {
-        return new Result(creditService.createPrepayment(request));
-    }
-
     @ApiOperation("Список договоров с ошибками в закрытии дня")
     @PostMapping(CREDIT_EOD_ERRORS)
     public Result create(@NotNull @Validated @RequestBody CreditEodFailedRequest request) {
-        return new CreditEodFailedResponse(creditService.failedEodCredits());
+        return new CreditEodFailedResponse(creditService.findFailedEodCredits());
     }
 
 }

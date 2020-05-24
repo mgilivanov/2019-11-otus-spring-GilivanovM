@@ -38,15 +38,15 @@ public class PayDocumentServiceImpl implements PayDocumentService {
     public PayDocument create(PayDocumentCreateRequest request){
         request.validate();
 
-        Account accountDt = (request.getAccountDt() == null) ? accountService.getBankAccountDt() : accountService.findById(request.getAccountDt())
+        Account accountDt = (request.getAccountDt() == null) ? null : accountService.findById(request.getAccountDt())
                 .orElseThrow(() -> new BusinessLogicException(BusinessLogicException.DOCUMENT_NOT_FOUND_DT_CODE, BusinessLogicException.DOCUMENT_NOT_FOUND_DT_MESSAGE));
-        Account accountKt = (request.getAccountKt() == null) ? accountService.getBankAccountKt() : accountService.findById(request.getAccountKt())
+        Account accountKt = (request.getAccountKt() == null) ? null : accountService.findById(request.getAccountKt())
                 .orElseThrow(() -> new BusinessLogicException(BusinessLogicException.DOCUMENT_NOT_FOUND_KT_CODE, BusinessLogicException.DOCUMENT_NOT_FOUND_KT_MESSAGE));
-        if ((accountDt.getAccountType().getCode() == AccountType.SERVICE) && eodService.isDayClosing()){
+        if (accountDt != null && accountDt.getAccountType().getCode() == AccountType.SERVICE && eodService.isDayClosing()){
             throw new BusinessLogicException(BusinessLogicException.DOCUMENT_DAY_CLOSING_CODE, BusinessLogicException.DOCUMENT_DAY_CLOSING_MESSAGE);
         }
-        if ((accountDt.getAccountType().isCreditAccount() && !accountDt.getAccountType().getCode().equals(AccountType.SERVICE)) ||
-                (accountKt.getAccountType().isCreditAccount() && !accountKt.getAccountType().getCode().equals(AccountType.SERVICE))){
+        if (( accountDt != null && accountDt.getAccountType().isCreditAccount() && !accountDt.getAccountType().getCode().equals(AccountType.SERVICE)) ||
+                (accountKt != null && accountKt.getAccountType().isCreditAccount() && !accountKt.getAccountType().getCode().equals(AccountType.SERVICE))){
             throw new BusinessLogicException(BusinessLogicException.DOCUMENT_EXTERNAL_CREDIT_PROHIBITED_CODE, BusinessLogicException.DOCUMENT_EXTERNAL_CREDIT_PROHIBITED_MESSAGE);
         }
         LocalDate eodDate = (request.getEodDate() == null) ? eodService.getEodDate() : request.getEodDate();
@@ -81,8 +81,8 @@ public class PayDocumentServiceImpl implements PayDocumentService {
             payDocument.setStatus(PayDocument.Status.WAIT_VALUE_DATE);
         }
         else {
-            accountService.debit(payDocument.getAccountDt(), payDocument.getSum());
-            accountService.credit(payDocument.getAccountKt(), payDocument.getSum());
+            if (payDocument.getAccountDt() != null) accountService.debit(payDocument.getAccountDt(), payDocument.getSum());
+            if (payDocument.getAccountKt() != null) accountService.credit(payDocument.getAccountKt(), payDocument.getSum());
             payDocument.setStatus(PayDocument.Status.COMPLETED).setOperationDate(LocalDateTime.now());
         }
         payDocumentRepository.save(payDocument);
@@ -97,5 +97,10 @@ public class PayDocumentServiceImpl implements PayDocumentService {
     @Override
     public List<PayDocument> findAllByEodDate(LocalDate date){
         return payDocumentRepository.findAllByEodDate(date);
+    }
+
+    @Override
+    public long countByEodDate(LocalDate date){
+        return payDocumentRepository.countByEodDate(date);
     }
 }

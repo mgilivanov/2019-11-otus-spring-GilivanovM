@@ -36,11 +36,13 @@ public class ClientDto {
     private String email;
 
     public ClientDto(Client client) {
-        this.id = client.getId();
-        this.lastName = client.getLastName();
-        this.firstName = client.getFirstName();
-        this.middleName = client.getMiddleName();
-        this.passportId = client.getPassportId();
-        this.email = client.getEmail();
+        if (client != null) {
+            this.id = client.getId();
+            this.lastName = client.getLastName();
+            this.firstName = client.getFirstName();
+            this.middleName = client.getMiddleName();
+            this.passportId = client.getPassportId();
+            this.email = client.getEmail();
+        }
     }
 }
