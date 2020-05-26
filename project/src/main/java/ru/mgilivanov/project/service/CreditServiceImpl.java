@@ -26,14 +26,14 @@ public class CreditServiceImpl implements CreditService {
     }
 
     @Override
-    public List<Credit> findAllByStatus(String status){
+    public List<Credit> findAllByStatus(String status) {
         return creditRepository.findAllByStatus(status);
     }
 
     @Override
-    public Credit issue(CreditIssueRequest request){
+    public Credit issue(CreditIssueRequest request) {
         Optional<Client> optClient = clientService.findById(request.getClientId());
-        if (optClient.isEmpty()){
+        if (optClient.isEmpty()) {
             throw new BusinessLogicException(BusinessLogicException.CLIENT_NOT_FOUND_CODE, BusinessLogicException.CLIENT_NOT_FOUND_MESSAGE);
         }
         Credit credit = new Credit()
@@ -73,20 +73,17 @@ public class CreditServiceImpl implements CreditService {
                 .orElseThrow(() -> new BusinessLogicException(BusinessLogicException.CREDIT_NOT_FOUND_CODE, BusinessLogicException.CREDIT_NOT_FOUND_MESSAGE));
     }
 
-
-
-    public List<Credit> findAllByIssueDate(LocalDate issueDate){
+    @Override
+    public List<Credit> findAllByIssueDate(LocalDate issueDate) {
         return creditRepository.findAllByIssueDate(issueDate);
     }
 
     @Override
-    public List<Credit> findFailedEodCredits(){
-        if (eodService.isDayClosing()){
+    public List<Credit> findFailedEodCredits() {
+        if (eodService.isDayClosing()) {
             throw new BusinessLogicException(BusinessLogicException.DOCUMENT_DAY_CLOSING_CODE, BusinessLogicException.DOCUMENT_DAY_CLOSING_MESSAGE);
         }
         return creditRepository.findAllByLastProcessedDateBeforeAndIssueDateBefore(eodService.getPrevEodDate(), eodService.getEodDate());
     }
-
-
 
 }

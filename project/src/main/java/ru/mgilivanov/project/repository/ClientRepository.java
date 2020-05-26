@@ -13,7 +13,5 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     Optional<Client> findById(long id);
 
-    Optional<Client> findByPassportId(String passportId);
-
     List<Client> findByPassportIdLikeAndLastNameLikeAndFirstNameLikeAndMiddleNameLike(String passportId, String lastName, String firstName, String middleName);
 }

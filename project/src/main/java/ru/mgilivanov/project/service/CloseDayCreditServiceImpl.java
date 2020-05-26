@@ -29,10 +29,10 @@ public class CloseDayCreditServiceImpl implements CloseDayCreditService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public void runEodForCredit(Credit credit, LocalDate date){
+    public void runEodForCredit(Credit credit, LocalDate date) {
         repaymentOverDue(credit);
         chargeFines(credit);
-        if (credit.getNextStmtDate().equals(date)){
+        if (credit.getNextStmtDate().equals(date)) {
             capitalizationInterest(credit);
             allotmentPayment(credit);
             regularPayment(credit);
@@ -47,42 +47,37 @@ public class CloseDayCreditServiceImpl implements CloseDayCreditService {
         setLastProcessedDate(credit);
     }
 
-
-    @Override
-    public void repaymentOverDue(Credit credit) {
+    private void repaymentOverDue(Credit credit) {
         Double overdueAmount = accountService.getGroupDebtOverdue(credit.getAccounts());
-        if (overdueAmount > 0){
+        if (overdueAmount > 0) {
             repayment(credit, overdueAmount, PayDocument.Type.REPAYMENT_OVERDUE);
         }
     }
 
-    @Override
-    public void repaymentPenalty(Credit credit) {
+    private void repaymentPenalty(Credit credit) {
         Double penaltyAmount = accountService.getGroupDebtPenalty(credit.getAccounts());
-        if (penaltyAmount > 0){
+        if (penaltyAmount > 0) {
             repayment(credit, penaltyAmount, PayDocument.Type.REPAYMENT_PENALTY);
         }
     }
 
-    @Override
-    public void regularPayment(Credit credit) {
+    private void regularPayment(Credit credit) {
         Double regularAmount = accountService.getGroupDebtRegular(credit.getAccounts());
         if (regularAmount > 0) {
             repayment(credit, regularAmount, PayDocument.Type.REPAYMENT_REGULAR);
         }
     }
 
-    @Override
-    public void repayment(Credit credit, Double sum, String type){
+    private void repayment(Credit credit, Double sum, String type) {
         Account serviceAccount = accountService.toMap(credit.getAccounts()).get(AccountType.SERVICE);
-        Double balanceLeft  = serviceAccount.getBalance();
+        Double balanceLeft = serviceAccount.getBalance();
         if ((balanceLeft <= 0) || (sum == 0)) return;
         Double sumLeft = sum;
         List<Account> creditAccounts = credit.getAccounts().stream()
                 .filter(i -> i.getAccountType().getRepaymentOrder() != null)
                 .sorted(Comparator.comparingInt(i -> i.getAccountType().getRepaymentOrder()))
                 .collect(Collectors.toList());
-        for (Account account : creditAccounts){
+        for (Account account : creditAccounts) {
             Double sumDoc = Math.min(balanceLeft, Math.min(sumLeft, (-1) * account.getBalance()));
             if (sumDoc > 0) {
                 payDocumentService.create(type,
@@ -94,11 +89,10 @@ public class CloseDayCreditServiceImpl implements CloseDayCreditService {
                 sumLeft -= sumDoc;
                 if ((balanceLeft == 0) || (sumLeft == 0)) return;
             }
-        };
+        }
     }
 
-    @Override
-    public void capitalizationInterest(Credit credit) {
+    private void capitalizationInterest(Credit credit) {
         Map<String, Account> accountsMap = accountService.toMap(credit.getAccounts());
         payDocumentService.create(PayDocument.Type.CAPITALIZATION_PERCENTS,
                 eodService.getClosingEodDate(),
@@ -107,9 +101,8 @@ public class CloseDayCreditServiceImpl implements CloseDayCreditService {
                 Precision.round((-1) * accountsMap.get(AccountType.UNAPPLIED_PERCENTS).getBalance(), 2, 3));
     }
 
-    @Override
-    public void allotmentPayment(Credit credit) {
-        Map <String, Account> accountsMap = accountService.toMap(credit.getAccounts());
+    private void allotmentPayment(Credit credit) {
+        Map<String, Account> accountsMap = accountService.toMap(credit.getAccounts());
 
         Double remainSum = credit.getRegPayment();
         Double sumPercents = Math.min(remainSum, (-1) * accountsMap.get(AccountType.USUAL_PERCENTS).getBalance());
@@ -129,9 +122,8 @@ public class CloseDayCreditServiceImpl implements CloseDayCreditService {
                 sumDebt);
     }
 
-    @Override
-    public void transferToOverdue(Credit credit) {
-        Map <String, Account> accountsMap = accountService.toMap(credit.getAccounts());
+    private void transferToOverdue(Credit credit) {
+        Map<String, Account> accountsMap = accountService.toMap(credit.getAccounts());
 
         Double percentsToOverdue = (-1) * accountsMap.get(AccountType.PAYMENT_PERCENTS).getBalance();
         if (percentsToOverdue > 0) {
@@ -151,11 +143,10 @@ public class CloseDayCreditServiceImpl implements CloseDayCreditService {
                 debtToOverdue);
     }
 
-    @Override
-    public void chargeFines(Credit credit) {
+    private void chargeFines(Credit credit) {
         Double overdueAmount = accountService.getGroupDebtOverdue(credit.getAccounts());
         if (overdueAmount < 0) {
-            Map <String, Account> accountsMap = accountService.toMap(credit.getAccounts());
+            Map<String, Account> accountsMap = accountService.toMap(credit.getAccounts());
             payDocumentService.create(PayDocument.Type.CHARGE_FINE,
                     eodService.getClosingEodDate(),
                     accountsMap.get(AccountType.PENALTY),
@@ -164,9 +155,8 @@ public class CloseDayCreditServiceImpl implements CloseDayCreditService {
         }
     }
 
-    @Override
-    public void accrualInterest(Credit credit) {
-        Map <String, Account> accountsMap = accountService.toMap(credit.getAccounts());
+    private void accrualInterest(Credit credit) {
+        Map<String, Account> accountsMap = accountService.toMap(credit.getAccounts());
 
         Double sum = (-1) * accountsMap.get(AccountType.USUAL_DEBT).getBalance()
                 * credit.getPercentRate()
@@ -180,32 +170,28 @@ public class CloseDayCreditServiceImpl implements CloseDayCreditService {
         );
     }
 
-    @Override
-    public void closeStatement(Credit credit){
+    private void closeStatement(Credit credit) {
         credit.setNextStmtDate(DateUtil.getNextPeriod(credit.getStmtDay(), credit.getNextStmtDate()));
         creditRepository.save(credit);
     }
 
-    @Override
-    public void closeWithoutDebt(Credit credit){
-        if (accountService.getFullDebt(credit.getAccounts()) == 0){
+    private void closeWithoutDebt(Credit credit) {
+        if (accountService.getFullDebt(credit.getAccounts()) == 0) {
             credit.setStatus(Credit.STATUS_CLOSED);
             creditRepository.save(credit);
         }
     }
 
-    @Override
-    public void setLastProcessedDate(Credit credit) {
+    private void setLastProcessedDate(Credit credit) {
         credit.setLastProcessedDate(eodService.getClosingEodDate());
         creditRepository.save(credit);
     }
 
-    @Override
-    public void applyAllPrepayments(LocalDate date){
+    private void applyAllPrepayments(LocalDate date) {
         List<Prepayment> applications = prepaymentRepository.findAllByDateAndStatusOrderById(eodService.getClosingEodDate(), Prepayment.Status.NEW);
-        for (Prepayment application : applications){
-            Double balance  = accountService.toMap(application.getCredit().getAccounts()).get(AccountType.SERVICE).getBalance();
-            if (balance < application.getSum()){
+        for (Prepayment application : applications) {
+            Double balance = accountService.toMap(application.getCredit().getAccounts()).get(AccountType.SERVICE).getBalance();
+            if (balance < application.getSum()) {
                 application.setStatus(Prepayment.Status.REJECTED);
                 prepaymentRepository.save(application);
                 return;
@@ -223,7 +209,7 @@ public class CloseDayCreditServiceImpl implements CloseDayCreditService {
         if (message == null) {
             credit.setLastProcessedMessage(null);
         } else {
-            credit.setLastProcessedMessage(message.substring(0, Integer.min((message.length() == 0) ? 0 : message.length(), 32000)));
+            credit.setLastProcessedMessage(message.substring(0, Integer.min(message.length(), 32000)));
         }
         creditRepository.save(credit);
     }

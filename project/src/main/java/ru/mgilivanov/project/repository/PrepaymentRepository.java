@@ -12,8 +12,6 @@ public interface PrepaymentRepository extends JpaRepository<Prepayment, Long> {
 
     Prepayment save(Prepayment prepayment);
 
-    List<Prepayment> findAllByCreditId(long creditId);
-
     Optional<Prepayment> findById(long id);
 
     List<Prepayment> findAllByDateAndStatusOrderById(LocalDate date, String status);

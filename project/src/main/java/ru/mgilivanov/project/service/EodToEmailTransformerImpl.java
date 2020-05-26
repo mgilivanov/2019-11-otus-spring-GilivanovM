@@ -17,7 +17,7 @@ public class EodToEmailTransformerImpl implements EodToEmailTransformer {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(appProps.getAdminEmail());
         mailMessage.setFrom(appProps.getServerEmail());
-        mailMessage.setSubject(String.format("Запущено закрытие дня %s", eod.getDate()));
+        mailMessage.setSubject(String.format("Закрытие дня %s", eod.getDate()));
         mailMessage.setText(String.format("Запущено закрытие дня %s. Время запуска: %s",
                 eod.getDate(), eod.getCloseTimeStart()));
         return mailMessage;

@@ -23,7 +23,6 @@ spring:
   mail:
     host: smtp.mail.ru
     port: 465
-    # логин и пароль для почты, через которую сервер отправляет письма
     username: spring.project
     password: Otus201911
     protocol: smtps
@@ -32,11 +31,6 @@ spring:
         smtp:
           auth: true
           starttls.enable: true
-
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
 
 logging:
   level:

@@ -51,22 +51,22 @@ public class EodServiceImpl implements EodService {
     }
 
     @Override
-    public LocalDate getPrevEodDate(){
+    public LocalDate getPrevEodDate() {
         return getEodDate().plusDays(-1);
     }
 
     @Override
-    public boolean isDayClosing(){
-        return !eodRepository.findFirstByStatus(Eod.Status.CLOSING).isEmpty();
+    public boolean isDayClosing() {
+        return eodRepository.findFirstByStatus(Eod.Status.CLOSING).isPresent();
     }
 
     @Transactional
     @Override
-    public LocalDate openNewEod(LocalDate currentEodDate){
-        if (isDayClosing()){
+    public LocalDate openNewEod(LocalDate currentEodDate) {
+        if (isDayClosing()) {
             throw new BusinessLogicException(BusinessLogicException.EOD_IS_ALREADY_CLOSING_CODE, BusinessLogicException.EOD_IS_ALREADY_CLOSING_MESSAGE);
         }
-        if (!currentEodDate.equals(getEodDate())){
+        if (!currentEodDate.equals(getEodDate())) {
             throw new BusinessLogicException(BusinessLogicException.EOD_NOT_THIS_CODE, BusinessLogicException.EOD_NOT_THIS_MESSAGE);
         }
         Eod currentEod = getCurrentEod();
@@ -80,20 +80,20 @@ public class EodServiceImpl implements EodService {
 
     @Transactional
     @Override
-    public void closeOldEod(){
+    public void closeOldEod() {
         Eod eod = getClosingEod().setCloseTimeEnd(LocalDateTime.now()).setStatus(Eod.Status.CLOSED);
         eodRepository.save(eod);
         closeDayGateway.processCloseDay(eod, true);
     }
 
     @Override
-    public EodStateResponse status(){
+    public EodStateResponse status() {
         Eod closingEod = eodRepository.findFirstByStatus(Eod.Status.CLOSING).orElse(null);
         Eod currentEod = getCurrentEod();
         EodStateResponse eodStateResponse = new EodStateResponse()
                 .setStatus(currentEod.getStatus())
                 .setOpenDate(currentEod.getDate());
-        if (closingEod != null){
+        if (closingEod != null) {
             eodStateResponse.setClosingDate(closingEod.getDate())
                     .setStartClosingTime(closingEod.getCloseTimeStart())
                     .setStatus(closingEod.getStatus());

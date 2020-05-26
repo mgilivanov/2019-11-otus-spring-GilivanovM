@@ -32,11 +32,11 @@ public class PayDocumentDto {
 
     @ApiModelProperty(value = "Идентификатор счёта ДТ", position = 5)
     @JsonProperty("account_dt")
-    private long accountDt;
+    private Long accountDt;
 
     @ApiModelProperty(value = "Идентификатор счёта КТ", position = 6)
     @JsonProperty("account_kt")
-    private long accountKt;
+    private Long accountKt;
 
     @ApiModelProperty(value = "Номер внешнего счёта ДТ", position = 7)
     @JsonProperty("external_account_dt")

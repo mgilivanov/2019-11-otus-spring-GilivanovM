@@ -1,5 +1,7 @@
 package ru.mgilivanov.project.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,30 +34,40 @@ public class CreditController {
 
     @ApiOperation("Выдача кредита")
     @PostMapping(CREDIT_ISSUE)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public CreditInfoResponse issue(@NotNull @Validated @RequestBody CreditIssueRequest request) {
         return new CreditInfoResponse(creditService.issue(request));
     }
 
     @ApiOperation("Информация по кредиту")
     @PostMapping(CREDIT_INFO)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public CreditInfoResponse info(@NotNull @Validated @RequestBody CreditInfoRequest request) {
         return new CreditInfoResponse(creditService.info(request));
     }
 
     @ApiOperation("Информация по кредитам клиента")
     @PostMapping(CREDITS_FOR_CLIENT)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public CreditForClientResponse infoForClient(@NotNull @Validated @RequestBody CreditForClientRequest request) {
         return new CreditForClientResponse(creditService.findAllByClientId(request.getClientId()));
     }
 
     @ApiOperation("Информация по новым кредитам за день")
     @PostMapping(CREDITS_BY_DAY)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "10000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public CreditForClientResponse reestr(@NotNull @Validated @RequestBody CreditReestrRequest request) {
         return new CreditForClientResponse(creditService.findAllByIssueDate(request.getIssueDate()));
     }
 
     @ApiOperation("Список договоров с ошибками в закрытии дня")
     @PostMapping(CREDIT_EOD_ERRORS)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "10000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public Result create(@NotNull @Validated @RequestBody CreditEodFailedRequest request) {
         return new CreditEodFailedResponse(creditService.findFailedEodCredits());
     }

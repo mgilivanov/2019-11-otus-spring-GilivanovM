@@ -1,5 +1,7 @@
 package ru.mgilivanov.project.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,8 @@ public class PrepaymentController {
 
     @ApiOperation("Создание заявки на частичное/полное досрочное погашение кредита")
     @PostMapping(CREDIT_PREPAYMENT)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public Result create(@NotNull @Validated @RequestBody CreditPrepaymentRequest request) {
         return new Result(creditPrepaymentService.createPrepayment(request));
     }

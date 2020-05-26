@@ -1,5 +1,7 @@
 package ru.mgilivanov.project.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,8 @@ public class CloseDayController {
 
     @ApiOperation("Закрытие опер.дня")
     @PostMapping(CLOSE_DAY_RUN)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public Result save(@NotNull @Validated @RequestBody CloseDayRequest request) throws InterruptedException {
         closeDayService.prepareRunEod(request.getDate());
         closeDayService.runEod(request.getDate());
@@ -37,6 +41,8 @@ public class CloseDayController {
 
     @ApiOperation("Состояние операционного дня")
     @PostMapping(EOD_STATUS)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public EodStateResponse status(@NotNull @Validated @RequestBody EodStateRequest request) {
         return eodService.status();
     }

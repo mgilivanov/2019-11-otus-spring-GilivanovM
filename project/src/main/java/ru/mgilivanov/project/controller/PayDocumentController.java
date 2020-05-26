@@ -1,5 +1,7 @@
 package ru.mgilivanov.project.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +32,16 @@ public class PayDocumentController {
 
     @ApiOperation("Создание платежного документа")
     @PostMapping(PAYDOC_CREATE)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public PayDocumentCreateResponse create(@NotNull @Validated @RequestBody PayDocumentCreateRequest request) {
         return new PayDocumentCreateResponse(payDocumentService.create(request));
     }
 
     @ApiOperation("Реестр платежных документов за дату")
     @PostMapping(PAYDOC_REESTR)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "10000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public PayDocumentReestrResponse reestr(@NotNull @Validated @RequestBody PayDocumentReestrRequest request) {
         return new PayDocumentReestrResponse(payDocumentService.findAllByEodDate(request.getEodDate()));
     }

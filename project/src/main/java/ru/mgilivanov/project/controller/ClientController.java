@@ -1,5 +1,7 @@
 package ru.mgilivanov.project.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,18 +31,24 @@ public class ClientController {
 
     @ApiOperation("Создание клиента")
     @PostMapping(value = CLIENT_ADD,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public ClientDto add(@NotNull @Validated @RequestBody ClientAddRequest request) {
         return new ClientDto(clientService.add(request));
     }
 
     @ApiOperation("Изменение клиента")
     @PostMapping(CLIENT_EDIT)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public ClientDto edit(@NotNull @Validated @RequestBody ClientEditRequest request) {
         return new ClientDto(clientService.edit(request));
     }
 
     @ApiOperation("Поиск клиента по паспорту")
     @PostMapping(CLIENT_INFO)
+    @HystrixCommand(commandProperties = {@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000")
+            , @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")})
     public ClientInfoResponse find(@NotNull @Validated @RequestBody ClientFindRequest request) {
         return new ClientInfoResponse(clientService.find(request.init()));
     }
