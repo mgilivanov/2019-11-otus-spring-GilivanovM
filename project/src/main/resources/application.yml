@@ -1,0 +1,52 @@
+server:
+  port: 8888
+
+app:
+  server-email: spring.project@mail.ru
+  admin-email: spring.project@mail.ru
+
+spring:
+  datasource:
+    initialization-mode: never
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/creditproject
+    username: postgres
+    password: postgres
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+    show-sql: true
+
+  mail:
+    host: smtp.mail.ru
+    port: 465
+    username: spring.project
+    password: Otus201911
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+
+logging:
+  level:
+    ROOT: INFO
+  file:
+    name: project_app.log
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, logfile
+    health:
+      show-details: always
+    loggers:
+      enabled: true
